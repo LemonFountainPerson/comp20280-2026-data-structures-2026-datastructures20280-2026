@@ -65,8 +65,20 @@ public abstract class AbstractBinaryTree<E> extends AbstractTree<E>
      * @param p        Position serving as the root of a subtree
      * @param snapshot a list to which results are appended
      */
-    private void inorderSubtree(Position<E> p, List<Position<E>> snapshot) {
-        // TODO
+    private void inorderSubtree(Position<E> p, List<Position<E>> snapshot)
+    {
+        Position<E> left = left(p);
+        Position<E> right = right(p);
+
+        if (left != null)
+        {
+           inorderSubtree(left, snapshot);
+        }
+        snapshot.add(p);
+        if (right != null)
+        {
+           inorderSubtree(right, snapshot);
+        }
     }
 
     /**
@@ -74,7 +86,8 @@ public abstract class AbstractBinaryTree<E> extends AbstractTree<E>
      *
      * @return iterable collection of the tree's positions reported in inorder
      */
-    public Iterable<Position<E>> inorder() {
+    public Iterable<Position<E>> inorder()
+    {
         List<Position<E>> snapshot = new ArrayList<>();
         if (!isEmpty())
             inorderSubtree(root(), snapshot);   // fill the snapshot recursively

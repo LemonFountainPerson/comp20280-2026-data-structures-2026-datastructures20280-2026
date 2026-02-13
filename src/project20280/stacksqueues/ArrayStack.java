@@ -7,7 +7,7 @@ public class ArrayStack<E> implements Stack<E> {
     /**
      * Default array capacity.
      */
-    public static final int CAPACITY = 100;   // default array capacity
+    public static int CAPACITY = 100;   // default array capacity
 
     /**
      * Generic array used for storage of stack elements.
@@ -17,7 +17,7 @@ public class ArrayStack<E> implements Stack<E> {
     /**
      * Index of the top element of the stack in the array.
      */
-    private final int t = -1;                      // index of the top element in stack
+    private int t = -1;                      // index of the top element in stack
 
     /**
      * Constructs an empty stack using the default array capacity.
@@ -32,8 +32,11 @@ public class ArrayStack<E> implements Stack<E> {
      * @param capacity length of the underlying array
      */
     @SuppressWarnings({"unchecked"})
-    public ArrayStack(int capacity) {        // constructs stack with given capacity
-        // TODO
+    public ArrayStack(int capacity)
+    {
+        // constructs stack with given capacity
+        CAPACITY = capacity;
+        data = (E[])new Object[capacity];
     }
 
     /**
@@ -63,8 +66,10 @@ public class ArrayStack<E> implements Stack<E> {
      * @throws IllegalStateException if the array storing the elements is full
      */
     @Override
-    public void push(E e) {
-        // TODO
+    public void push(E e)
+    {
+        t++;
+        data[t] = e;
     }
 
     /**
@@ -73,9 +78,13 @@ public class ArrayStack<E> implements Stack<E> {
      * @return top element in the stack (or null if empty)
      */
     @Override
-    public E top() {
-        // TODO
-        return null;
+    public E top()
+    {
+        if (t < 0)
+        {
+            return null;
+        }
+        return data[t];
     }
 
     /**
@@ -84,9 +93,11 @@ public class ArrayStack<E> implements Stack<E> {
      * @return element removed (or null if empty)
      */
     @Override
-    public E pop() {
-        // TODO
-        return null;
+    public E pop()
+    {
+        E del = top();
+        t--;
+        return del;
     }
 
     /**

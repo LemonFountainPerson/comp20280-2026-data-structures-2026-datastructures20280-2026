@@ -28,10 +28,11 @@ public class CircularlyLinkedList<E> implements List<E> {
         }
     }
 
-    private final Node<E> tail = null;
-    private final int size = 0;
+    private Node<E> tail = null;
+    private int size = 0;
 
-    public CircularlyLinkedList() {
+    public CircularlyLinkedList()
+    {
 
     }
 
@@ -42,8 +43,19 @@ public class CircularlyLinkedList<E> implements List<E> {
 
     @Override
     public E get(int i) {
-        // TODO
-        return null;
+        if (isEmpty())
+        {
+            return null;
+        }
+        Node<E> cursor = tail;
+        int k = 0;
+
+        while (k != i && cursor.next != null)
+        {
+            cursor = cursor.next;
+            k++;
+        }
+        return cursor.getData();
     }
 
     /**
@@ -54,18 +66,84 @@ public class CircularlyLinkedList<E> implements List<E> {
      * @param e the new element to be stored
      */
     @Override
-    public void add(int i, E e) {
-        // TODO
+    public void add(int i, E e)
+    {
+        if (isEmpty() || i == 0)
+        {
+            Node<E> prevTail = tail;
+            tail = new Node<E>(e, tail);
+            Node<E> cursor = tail;
+            while (cursor.next != null && cursor != prevTail)
+            {
+                cursor = cursor.next;
+            }
+
+            cursor.next = tail;
+
+            size++;
+            return;
+        }
+
+        Node<E> cursor = tail;
+        int k = 1;
+        while (cursor.next != null && k != i)
+        {
+            cursor = cursor.next;
+            k++;
+        }
+
+        cursor.next = new Node<E>(e, cursor.next);
     }
 
     @Override
-    public E remove(int i) {
-        // TODO
-        return null;
+    public E remove(int i)
+    {
+        if (isEmpty())
+        {
+            return null;
+        }
+
+        if (i == 0)
+        {
+            if (tail.next == tail)
+            {
+                tail = null;
+            }
+
+            Node<E> last = tail;
+            while (last.next != tail)
+            {
+                last = last.next;
+            }
+
+            Node<E> prevTail = tail;
+            last.next = tail.next;
+            tail = tail.next;
+            return prevTail.getData();
+        }
+
+        Node<E> cursor = tail;
+        int k = 1;
+        while (k != i && cursor.next != null)
+        {
+            cursor = cursor.next;
+            k++;
+        }
+
+        //cursor
+
+
+        return cursor.getData();
     }
 
-    public void rotate() {
-        // TODO
+    public void rotate()
+    {
+        if (isEmpty())
+        {
+            return;
+        }
+
+        tail = tail.next;
     }
 
     private class CircularlyLinkedListIterator<E> implements Iterator<E> {

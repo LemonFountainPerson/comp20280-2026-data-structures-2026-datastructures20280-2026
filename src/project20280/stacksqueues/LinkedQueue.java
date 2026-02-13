@@ -11,7 +11,7 @@ public class LinkedQueue<E> implements Queue<E> {
     }
 
     public LinkedQueue() {
-        // TODO
+        ll = new DoublyLinkedList<>();
     }
 
     @Override
@@ -25,20 +25,21 @@ public class LinkedQueue<E> implements Queue<E> {
     }
 
     @Override
-    public void enqueue(E e) {
-        // TODO
+    public void enqueue(E e)
+    {
+        ll.addLast(e);
     }
 
     @Override
-    public E first() {
-        // TODO
-        return null;
+    public E first()
+    {
+        return ll.get(0);
     }
 
     @Override
-    public E dequeue() {
-        // TODO
-        return null;
+    public E dequeue()
+    {
+        return ll.removeFirst();
     }
 
     public String toString() {

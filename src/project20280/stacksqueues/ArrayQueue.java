@@ -2,16 +2,20 @@ package project20280.stacksqueues;
 
 import project20280.interfaces.Queue;
 
+import java.lang.reflect.Array;
+
 public class ArrayQueue<E> implements Queue<E> {
 
-    private static final int CAPACITY = 1000;
+    private static int CAPACITY = 1000;
     private E[] data;
-    private final int front = 0;
-    private final int size = 0;
+    private int front = 0;
+    private int size = 0;
 
-    public ArrayQueue(int capacity) {
-        // TODO
-
+    @SuppressWarnings("unchecked")
+    public ArrayQueue(int capacity)
+    {
+        CAPACITY = capacity;
+        data = (E[]) new Object[CAPACITY];
     }
 
     public ArrayQueue() {
@@ -30,8 +34,14 @@ public class ArrayQueue<E> implements Queue<E> {
     }
 
     @Override
-    public void enqueue(E e) {
-        // TODO
+    public void enqueue(E e)
+    {
+        if (size >= CAPACITY - 1)
+        {
+           throw new IllegalArgumentException("Queue full!");
+        }
+        data[size] = e;
+        size++;
     }
 
     @Override
@@ -40,9 +50,11 @@ public class ArrayQueue<E> implements Queue<E> {
     }
 
     @Override
-    public E dequeue() {
-        // TODO
-        return null;
+    public E dequeue()
+    {
+        size--;
+        front++;
+        return data[front - 1];
     }
 
     public String toString() {

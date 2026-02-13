@@ -26,9 +26,9 @@ public abstract class AbstractTree<E> implements Tree<E> {
      * @throws IllegalArgumentException if p is not a valid Position for this tree.
      */
     @Override
-    public boolean isInternal(Position<E> p) {
-        // TODO
-        return false;
+    public boolean isInternal(Position<E> p)
+    {
+        return numChildren(p) >= 1;
     }
 
     /**
@@ -64,8 +64,10 @@ public abstract class AbstractTree<E> implements Tree<E> {
      * @throws IllegalArgumentException if p is not a valid Position for this tree.
      */
     @Override
-    public int numChildren(Position<E> p) {
-        // TODO
+    public int numChildren(Position<E> p)
+    {
+        //Position<E> buffer = validate(p);
+
         return 0;
     }
 
@@ -117,9 +119,14 @@ public abstract class AbstractTree<E> implements Tree<E> {
         return h;
     }
 
-    public int height_recursive(Position<E> p) {
-        // TODO
-        return 0;
+    public int height_recursive(Position<E> p)
+    {
+        int h = 0;
+        for (Position<E> child : children(p)) {
+            h = Math.max(h, 1 + height_recursive(child));
+        }
+
+        return h;
     }
 
     /**
@@ -128,7 +135,8 @@ public abstract class AbstractTree<E> implements Tree<E> {
      * @param p A valid Position within the tree
      * @throws IllegalArgumentException if p is not a valid Position for this tree.
      */
-    public int height() throws IllegalArgumentException {
+    public int height() throws IllegalArgumentException
+    {
         return height_recursive(root());
     }
 

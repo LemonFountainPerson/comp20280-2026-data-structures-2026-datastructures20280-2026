@@ -21,8 +21,10 @@ public class SinglyLinkedList<E> implements List<E> {
          * @param e the element to be stored
          * @param n reference to a node that should follow the new node
          */
-        public Node(E e, Node<E> n) {
-            // TODO
+        public Node(E e, Node<E> n)
+        {
+            element = e;
+            next = n;
         }
 
         // Accessor methods
@@ -32,8 +34,9 @@ public class SinglyLinkedList<E> implements List<E> {
          *
          * @return the element stored at the node
          */
-        public E getElement() {
-            return null;
+        public E getElement()
+        {
+            return element;
         }
 
         /**
@@ -41,9 +44,9 @@ public class SinglyLinkedList<E> implements List<E> {
          *
          * @return the following node
          */
-        public Node<E> getNext() {
-            // TODO
-            return null;
+        public Node<E> getNext()
+        {
+            return next;
         }
 
         // Modifier methods
@@ -53,8 +56,9 @@ public class SinglyLinkedList<E> implements List<E> {
          *
          * @param n the node that should follow this one
          */
-        public void setNext(Node<E> n) {
-            // TODO
+        public void setNext(Node<E> n)
+        {
+            next = n;
         }
     } //----------- end of nested Node class -----------
 
@@ -63,65 +67,177 @@ public class SinglyLinkedList<E> implements List<E> {
      */
     private Node<E> head = null;               // head node of the list (or null if empty)
 
-
-    /**
-     * Number of nodes in the list
-     */
     private int size = 0;                      // number of nodes in the list
 
-    public SinglyLinkedList() {
+    public SinglyLinkedList()
+    {
+
     }              // constructs an initially empty list
 
     //@Override
-    public int size() {
-        // TODO
-        return 0;
+    public int size()
+    {
+        return size;
     }
 
     //@Override
     public boolean isEmpty() {
-        // TODO
-        return false;
+        return size <= 0;
     }
 
     @Override
-    public E get(int position) {
-        // TODO
+    public E get(int position)
+    {
+        if (position < 0 || position >= size)
+        {
+            throw new IllegalArgumentException("Invalid position value");
+        }
+
+        Node<E> cursor = head;
+        int i = 0;
+        while (cursor != null)
+        {
+            if (i == position)
+            {
+                return cursor.getElement();
+            }
+            cursor = cursor.next;
+            i++;
+        }
+
         return null;
     }
 
     @Override
-    public void add(int position, E e) {
-        // TODO
+    public void add(int position, E e)
+    {
+        if (position < 0 || position > size)
+        {
+            throw new IllegalArgumentException("Invalid position value");
+        }
+
+        if (position == 0)
+        {
+            head = new Node<E>(e, head);
+            return;
+        }
+
+        Node<E> cursor = head;
+        int i = 1;
+        while (cursor != null && i < position)
+        {
+            cursor = cursor.next;
+            i++;
+        }
+
+        if (cursor == null)
+        {
+            return;
+        }
+
+        Node<E> nextNode = cursor.next;
+        cursor.next = new Node<E>(e, nextNode);
     }
 
 
     @Override
-    public void addFirst(E e) {
-        // TODO
+    public void addFirst(E e)
+    {
+        head = new Node<E>(e, head);
+        size++;
     }
 
     @Override
-    public void addLast(E e) {
-        // TODO
+    public void addLast(E e)
+    {
+        if (head == null)
+        {
+            addFirst(e);
+            return;
+        }
+
+        Node<E> cursor = head;
+        while (cursor.next != null)
+        {
+            cursor = cursor.next;
+        }
+
+        cursor.next = new Node<E>(e, null);
+        size++;
     }
 
     @Override
-    public E remove(int position) {
-        // TODO
-        return null;
+    public E remove(int position)
+    {
+        if (position < 0 || position >= size())
+        {
+            throw new IllegalArgumentException("Invalid position value");
+        }
+        if (position == 0)
+        {
+            return removeFirst();
+        }
+
+        Node<E> cursor = head;
+        int i = 1;
+        while (cursor.next != null && i != position)
+        {
+            cursor = cursor.next;
+            i++;
+        }
+
+        if (cursor.next == null)
+        {
+            return null;
+        }
+
+        Node<E> deleteNode = cursor.next;
+        cursor.next = cursor.next.next;
+        size--;
+
+        return deleteNode.element;
     }
 
     @Override
-    public E removeFirst() {
-        // TODO
-        return null;
+    public E removeFirst()
+    {
+        if (head == null)
+        {
+            return null;
+        }
+
+        Node<E> firstElement = head;
+        head = head.next;
+        size--;
+
+        return firstElement.element;
     }
 
     @Override
-    public E removeLast() {
-        // TODO
-        return null;
+    public E removeLast()
+    {
+        if (head == null)
+        {
+            return null;
+        }
+
+        Node<E> cursor = head;
+
+        if (cursor.next == null)
+        {
+            return removeFirst();
+        }
+
+        while (cursor.next.next != null)
+        {
+            cursor = cursor.next;
+        }
+
+        Node<E> last = cursor.next;
+        cursor.next = null;
+        size--;
+
+        return last.element;
     }
 
     //@Override
