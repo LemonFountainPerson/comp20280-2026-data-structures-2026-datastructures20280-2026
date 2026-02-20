@@ -119,6 +119,7 @@ public class SinglyLinkedList<E> implements List<E> {
         if (position == 0)
         {
             head = new Node<E>(e, head);
+            size++;
             return;
         }
 
@@ -126,7 +127,7 @@ public class SinglyLinkedList<E> implements List<E> {
         int i = 1;
         while (cursor != null && i < position)
         {
-            cursor = cursor.next;
+            cursor = cursor.getNext();
             i++;
         }
 
@@ -135,35 +136,22 @@ public class SinglyLinkedList<E> implements List<E> {
             return;
         }
 
-        Node<E> nextNode = cursor.next;
-        cursor.next = new Node<E>(e, nextNode);
+        Node<E> nextNode = cursor.getNext();
+        cursor.setNext( new Node<E>(e, nextNode));
+        size++;
     }
 
 
     @Override
     public void addFirst(E e)
     {
-        head = new Node<E>(e, head);
-        size++;
+        add(0, e);
     }
 
     @Override
     public void addLast(E e)
     {
-        if (head == null)
-        {
-            addFirst(e);
-            return;
-        }
-
-        Node<E> cursor = head;
-        while (cursor.next != null)
-        {
-            cursor = cursor.next;
-        }
-
-        cursor.next = new Node<E>(e, null);
-        size++;
+        add(size - 1, e);
     }
 
     @Override
@@ -173,9 +161,12 @@ public class SinglyLinkedList<E> implements List<E> {
         {
             throw new IllegalArgumentException("Invalid position value");
         }
+
         if (position == 0)
         {
-            return removeFirst();
+            Node<E> del = head;
+            head = del.getNext();
+            return del.getElement();
         }
 
         Node<E> cursor = head;
@@ -186,13 +177,13 @@ public class SinglyLinkedList<E> implements List<E> {
             i++;
         }
 
-        if (cursor.next == null)
+        Node<E> deleteNode = cursor.next;
+        if (deleteNode == null)
         {
             return null;
         }
 
-        Node<E> deleteNode = cursor.next;
-        cursor.next = cursor.next.next;
+        cursor.setNext(deleteNode.getNext());
         size--;
 
         return deleteNode.element;
@@ -201,43 +192,13 @@ public class SinglyLinkedList<E> implements List<E> {
     @Override
     public E removeFirst()
     {
-        if (head == null)
-        {
-            return null;
-        }
-
-        Node<E> firstElement = head;
-        head = head.next;
-        size--;
-
-        return firstElement.element;
+        return remove(0);
     }
 
     @Override
     public E removeLast()
     {
-        if (head == null)
-        {
-            return null;
-        }
-
-        Node<E> cursor = head;
-
-        if (cursor.next == null)
-        {
-            return removeFirst();
-        }
-
-        while (cursor.next.next != null)
-        {
-            cursor = cursor.next;
-        }
-
-        Node<E> last = cursor.next;
-        cursor.next = null;
-        size--;
-
-        return last.element;
+        return remove(size - 1);
     }
 
     //@Override
