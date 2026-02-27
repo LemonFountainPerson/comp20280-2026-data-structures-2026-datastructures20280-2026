@@ -4,6 +4,8 @@ import project20280.interfaces.List;
 
 import java.util.Iterator;
 
+import static java.lang.Math.clamp;
+
 public class SinglyLinkedList<E> implements List<E> {
 
     private static class Node<E> {
@@ -151,7 +153,7 @@ public class SinglyLinkedList<E> implements List<E> {
     @Override
     public void addLast(E e)
     {
-        add(size - 1, e);
+        add(size, e);
     }
 
     @Override
@@ -199,6 +201,50 @@ public class SinglyLinkedList<E> implements List<E> {
     public E removeLast()
     {
         return remove(size - 1);
+    }
+
+    public void reverse()
+    {
+        head = reverseList(head);
+    }
+
+    private Node<E> reverseList(Node<E> inputHead)
+    {
+        if (inputHead == null || inputHead.getNext() == null)
+        {
+            return inputHead;
+        }
+
+        Node<E> reverseHead = reverseList(inputHead.getNext());
+
+        inputHead.getNext().setNext(inputHead);
+
+        inputHead.setNext(null);
+
+        return reverseHead;
+    }
+
+    public SinglyLinkedList<E> recursiveCopy()
+    {
+        SinglyLinkedList<E> list = new SinglyLinkedList<E>();
+
+        recursiveCopyData(head, list);
+
+        return list;
+    }
+
+    private void recursiveCopyData(Node<E> inputHead, SinglyLinkedList<E> list)
+    {
+        if (inputHead == null)
+        {
+            return;
+        }
+
+        recursiveCopyData(inputHead.getNext(), list);
+
+        list.addFirst(inputHead.getElement());
+
+        return;
     }
 
     //@Override

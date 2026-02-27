@@ -1,6 +1,7 @@
 package project20280.tree;
 
 import project20280.interfaces.Position;
+import project20280.list.SinglyLinkedList;
 
 import java.util.ArrayList;
 
@@ -59,6 +60,23 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
         String[] arr = { "A", "B", "C", "D", "E", null, "F", null, null, "G", "H", null, null, null, null };
         bt.createLevelOrder(arr);
         System.out.println(bt.toBinaryTreeString());
+
+        String[] inorder = { "A", "B", "C", "D", "E", "F", "G", "H" };
+        String[] preorder = { "F", "B", "A", "D", "C", "E", "G", "H"};
+        LinkedBinaryTree <String> bt2 = new LinkedBinaryTree<>();
+        bt2.construct(inorder, preorder);
+        System.out.println(bt2.toBinaryTreeString ());
+
+        /*
+
+        Integer[] inorder= {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
+        Integer[] preorder= {18, 2, 1, 14, 13, 12, 4, 3, 9, 6, 5, 8, 7, 10, 11, 15, 16, 17, 28, 23, 19, 22, 20, 21, 24, 27, 26, 25, 29, 30};
+
+        LinkedBinaryTree <Integer > bt2 = new LinkedBinaryTree<>();
+        bt2.construct(inorder, preorder);
+        System.out.println(bt2.toBinaryTreeString ());
+        */
+
     }
 
 
@@ -342,8 +360,8 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
         if (i < l.size() && l.get(i) != null)
         {
             Node<E> n = createNode(l.get(i), p, null, null);
-            n.left = createLevelOrderHelper(l, n, 2 * i + 1);
-            n.right = createLevelOrderHelper(l, n, 2 * i + 2);
+            n.left = createLevelOrderHelper(l, null, 2 * i + 1);
+            n.right = createLevelOrderHelper(l, null, 2 * i + 2);
             size++;
             return n;
         }
@@ -365,17 +383,121 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
         if (i < arr.length && arr[i] != null)
         {
             Node<E> n = createNode(arr[i], p, null, null);
-            n.left = createLevelOrderHelper(arr, n.left, 2 * i + 1);
-            n.right = createLevelOrderHelper(arr, n.right, 2 * i + 2);
-            ++size;
+            n.left = createLevelOrderHelper(arr, null, 2 * i + 1);
+            if (n.getLeft() != null)
+            {
+                n.getLeft().setParent(n);
+            }
+
+            n.right = createLevelOrderHelper(arr, null, 2 * i + 2);
+            if (n.getRight() != null)
+            {
+                n.getRight().setParent(n);
+            }
+
+            size++;
             return n;
         }
         return p;
     }
 
+
+    public void construct(E[] inorder, E[] preorder)
+    {
+        addRoot(preorder[0]);
+
+        int nodeIndex = 0;
+        while (nodeIndex < inorder.length && !inorder[nodeIndex].equals(preorder[0]))
+        {
+            nodeIndex++;
+        }
+
+        if (nodeIndex >= inorder.length)
+        {
+            return;
+        }
+
+        Node<E> rootNode = validate(root());
+        int rootIndex = 0;
+        rootIndex += constructHelper(inorder, preorder, rootNode, 0, nodeIndex - 1, rootIndex);
+
+        //constructHelper(inorder, preorder, rootNode, nodeIndex + 1, inorder.length - 1, rootIndex);
+
+    }
+
+
+    public int constructHelper(E[] inorder, E[] preorder, Node<E> source, int start, int end, int rootIndex)
+    {
+        if (source == null || start > end || rootIndex < 0 || rootIndex >= preorder.length)
+        {
+            return 0;
+        }
+
+        //System.out.println(source.getElement().toString() + " node " + (rootIndex));
+
+        source.setLeft(new Node<E>(preorder[rootIndex + 1], source, null, null));
+
+        int nodeIndex = 0;
+        while (nodeIndex < end && !inorder[nodeIndex].equals(preorder[rootIndex + 1]))
+        {
+            nodeIndex++;
+        }
+
+        System.out.println("Source: " + source +  " start: " + (start) + " end: " + end + " root: " + (rootIndex));
+
+        if (nodeIndex >= end)
+        {
+            return 1;
+        }
+
+        int nodesAdded = constructHelper(inorder, preorder, source.getLeft(),  start, nodeIndex - 1,rootIndex + 1);
+
+        System.out.println(source.getElement().toString() + (rootIndex + nodesAdded));
+        if (rootIndex + nodesAdded >= preorder.length)
+        {
+            return nodesAdded;
+        }
+
+       // System.out.println(source.getElement().toString() + " node " + (rootIndex));
+
+        //source.setRight(new Node<E>(inorder[rootIndex + nodesAdded], source, null, null));
+        //nodesAdded += constructHelper(inorder, preorder, source.getRight(),  nodeIndex + 1, end, rootIndex + nodesAdded);
+
+        return nodesAdded;
+    }
+
+
     public String toBinaryTreeString() {
         BinaryTreePrinter<E> btp = new BinaryTreePrinter<>(this);
         return btp.print();
+    }
+
+    public void toBinaryTreeLeafString()
+    {
+        SinglyLinkedList<E> leaves = new SinglyLinkedList<E>();
+
+        findLeavesRecursive(leaves, validate(root()));
+
+        System.out.println(leaves);
+        return;
+    }
+
+    private void findLeavesRecursive(SinglyLinkedList<E> list, Node<E> inputRoot)
+    {
+        if (inputRoot == null)
+        {
+            return;
+        }
+
+        if (inputRoot.getLeft() == null && inputRoot.getRight() == null)
+        {
+            list.addLast(inputRoot.getElement());
+            return;
+        }
+
+        findLeavesRecursive(list, inputRoot.getLeft());
+
+        findLeavesRecursive(list, inputRoot.getRight());
     }
 
     public int externalNodeCount(Position<E> input)
